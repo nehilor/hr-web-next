@@ -1,9 +1,9 @@
 export const API_CONFIG = {
   BASE_URL: process.env.NEXT_PUBLIC_API_BASE || "",
   ENDPOINTS: {
-    LOGIN: "/api/auth/login",
-    REGISTER: "/api/auth/register",
-    PEOPLE: "/api/people",
+    LOGIN: "/auth/login",
+    REGISTER: "/auth/register",
+    PEOPLE: "/people",
   },
 } as const
 

@@ -16,7 +16,7 @@ import { ROUTES, SEARCH_DEBOUNCE_MS } from "@/lib/constants"
 import { usePeople } from "@/lib/hooks/use-people"
 import { useAuth } from "@/hooks/use-auth"
 import type { Person } from "@/lib/types"
-import { Plus, Search, Users, LogOut } from "lucide-react"
+import { Plus, Search, Users, LogOut, Activity } from "lucide-react"
 import Link from "next/link"
 
 export default function PeoplePage() {
@@ -79,6 +79,12 @@ export default function PeoplePage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button asChild variant="outline">
+                <Link href="/monitoring">
+                  <Activity className="mr-2 h-4 w-4" />
+                  Monitoring
+                </Link>
+              </Button>
               <Button asChild>
                 <Link href={ROUTES.PEOPLE_NEW}>
                   <Plus className="mr-2 h-4 w-4" />

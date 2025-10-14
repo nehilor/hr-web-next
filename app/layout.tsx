@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Providers } from "@/components/providers"
+import { ErrorBoundary } from "@/components/error-boundary"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Providers>{children}</Providers>
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Providers>{children}</Providers>
+          </Suspense>
+        </ErrorBoundary>
         <Analytics />
       </body>
     </html>
