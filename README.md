@@ -39,7 +39,6 @@ Create a `.env.local` file in the root directory:
 
 ```env
 NEXT_PUBLIC_API_BASE=http://localhost:4000
-NEXT_PUBLIC_SENTRY_DSN=https://your-dsn@sentry.io/project-id
 ```
 
 ### 3. Start Development Server

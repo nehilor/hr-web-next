@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(JSON.parse(storedUser))
       }
     } catch (error) {
-      console.error('Error loading auth data:', error)
+      // Silently handle auth data loading errors
     } finally {
       setIsLoading(false)
     }

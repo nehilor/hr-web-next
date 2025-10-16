@@ -166,7 +166,6 @@ function MonitoringPageContent() {
         createdAt: new Date().toISOString()
       }])
     } catch (error) {
-      console.error('Failed to fetch monitoring data:', error)
       toast({
         title: "Error",
         description: "Failed to fetch monitoring data.",
