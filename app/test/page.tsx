@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { NavHeader } from "@/components/navigation/nav-header"
+import { AuthGuard } from "@/components/auth-guard"
 import { Bug, CheckCircle, XCircle, Activity } from "lucide-react"
 import Link from "next/link"
 
@@ -118,6 +119,23 @@ export default function TestPage() {
     env: 'test',
     debug: true,
   })
+
+  return (
+    <AuthGuard>
+      <TestPageContent results={results} setResults={setResults} sdk={sdk} />
+    </AuthGuard>
+  )
+}
+
+function TestPageContent({
+  results,
+  setResults,
+  sdk
+}: {
+  results: Array<{ id: string; test: string; success: boolean; error?: string; timestamp: string }>
+  setResults: React.Dispatch<React.SetStateAction<Array<{ id: string; test: string; success: boolean; error?: string; timestamp: string }>>>
+  sdk: MonitoringSDK
+}) {
 
   const addResult = (test: string, success: boolean, error?: string) => {
     const result = {

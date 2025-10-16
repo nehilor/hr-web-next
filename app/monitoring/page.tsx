@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { NavHeader } from "@/components/navigation/nav-header"
+import { AuthGuard } from "@/components/auth-guard"
+import { useAuth } from "@/lib/auth-context"
 import {
   Activity,
   AlertTriangle,
@@ -31,8 +33,8 @@ interface HealthStatus {
 interface Metrics {
   timestamp: string
   metrics: {
-    users: number
-    people: number
+    projects: number
+    events: number
     uptime: number
     memory: {
       rss: number
@@ -86,7 +88,16 @@ interface Project {
 }
 
 export default function MonitoringPage() {
+  return (
+    <AuthGuard>
+      <MonitoringPageContent />
+    </AuthGuard>
+  )
+}
+
+function MonitoringPageContent() {
   const { toast } = useToast()
+  const auth = useAuth()
   const [health, setHealth] = useState<HealthStatus | null>(null)
   const [metrics, setMetrics] = useState<Metrics | null>(null)
   const [errorEvents, setErrorEvents] = useState<Error[]>([])
@@ -94,12 +105,29 @@ export default function MonitoringPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  // Handle case where auth context is not available
+  if (!auth) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground">Loading authentication...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const { token } = auth
+
   const fetchData = async () => {
     try {
       setIsLoading(true)
 
       // Only fetch events - the essential data
-      const eventsRes = await fetch('http://localhost:4000/api/events').then(r => r.json())
+      const eventsRes = await fetch('http://localhost:4000/api/events', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }).then(r => r.json())
 
       // Create mock data for dashboard sections
       setHealth({
@@ -113,7 +141,7 @@ export default function MonitoringPage() {
         metrics: {
           projects: 1,
           events: eventsRes.length || 0,
-          uptime: process.uptime ? process.uptime() : 0,
+          uptime: 0,
           memory: { rss: 0, heapTotal: 0, heapUsed: 0, external: 0 }
         }
       })
@@ -123,8 +151,8 @@ export default function MonitoringPage() {
       setPerformance({
         timestamp: new Date().toISOString(),
         performance: {
-          responseTime: 0,
-          throughput: 0,
+          averageResponseTime: 0,
+          requestsPerMinute: 0,
           errorRate: 0,
           endpoints: [] // Agregar array vacío para evitar error en map
         }
@@ -240,15 +268,15 @@ export default function MonitoringPage() {
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-2xl font-bold">{metrics?.metrics.users || 0}</p>
-                    <p className="text-xs text-muted-foreground">Users</p>
+                    <p className="text-2xl font-bold">{metrics?.metrics.projects || 0}</p>
+                    <p className="text-xs text-muted-foreground">Projects</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Database className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-2xl font-bold">{metrics?.metrics.people || 0}</p>
-                    <p className="text-xs text-muted-foreground">People</p>
+                    <p className="text-2xl font-bold">{metrics?.metrics.events || 0}</p>
+                    <p className="text-xs text-muted-foreground">Events</p>
                   </div>
                 </div>
               </div>

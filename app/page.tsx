@@ -1,11 +1,47 @@
 "use client"
 
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Activity, Bug, Database, Zap } from "lucide-react"
 import Link from "next/link"
+import { useAuth } from "@/lib/auth-context"
 
 export default function HomePage() {
+  const auth = useAuth()
+  const router = useRouter()
+
+  // Handle case where auth context is not available
+  if (!auth) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground">Loading authentication...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const { user, isLoading } = auth
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push("/monitoring")
+    }
+  }, [user, isLoading, router])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -21,20 +57,14 @@ export default function HomePage() {
                 <p className="text-muted-foreground">Sentry-like error tracking and monitoring service</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button asChild variant="outline">
-                <Link href="/test">
-                  <Bug className="mr-2 h-4 w-4" />
-                  Test SDK
-                </Link>
-              </Button>
-              <Button asChild>
-                <Link href="/monitoring">
-                  <Activity className="mr-2 h-4 w-4" />
-                  Dashboard
-                </Link>
-              </Button>
-            </div>
+                    <div className="flex items-center gap-2">
+                      <Button asChild>
+                        <Link href="/login">
+                          <Activity className="mr-2 h-4 w-4" />
+                          Sign In
+                        </Link>
+                      </Button>
+                    </div>
           </div>
         </div>
       </header>
@@ -120,15 +150,9 @@ export default function HomePage() {
           </p>
           <div className="flex gap-4 justify-center">
             <Button asChild size="lg">
-              <Link href="/test">
-                <Bug className="mr-2 h-4 w-4" />
-                Test the SDK
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/monitoring">
+              <Link href="/login">
                 <Activity className="mr-2 h-4 w-4" />
-                View Dashboard
+                Sign In to Access
               </Link>
             </Button>
           </div>
