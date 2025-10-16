@@ -1,99 +1,38 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { PeopleTable } from "@/components/people-table"
-import { PeopleCards } from "@/components/people-cards"
-import { PeopleSkeleton } from "@/components/people-skeleton"
-import { EmptyState } from "@/components/empty-state"
-import { ConfirmDialog } from "@/components/confirm-dialog"
-import { useToast } from "@/hooks/use-toast"
-import { useDebounce } from "@/hooks/use-debounce"
-import { peopleService } from "@/lib/services/people"
-import { ROUTES, SEARCH_DEBOUNCE_MS } from "@/lib/constants"
-import { usePeople } from "@/lib/hooks/use-people"
-import { useAuth } from "@/hooks/use-auth"
-import type { Person } from "@/lib/types"
-import { Plus, Search, Users, LogOut, Activity } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Activity, Bug, Database, Zap } from "lucide-react"
 import Link from "next/link"
 
-export default function PeoplePage() {
-  const router = useRouter()
-  const { toast } = useToast()
-  const { user, clearToken } = useAuth()
-
-  const [searchQuery, setSearchQuery] = useState("")
-  const [deleteTarget, setDeleteTarget] = useState<Person | null>(null)
-
-  const debouncedSearch = useDebounce(searchQuery, SEARCH_DEBOUNCE_MS)
-
-  const { people, isLoading, mutate } = usePeople(debouncedSearch)
-
-  const handleDelete = async () => {
-    if (!deleteTarget) return
-
-    try {
-      await peopleService.deletePerson(deleteTarget.id)
-
-      mutate()
-
-      toast({
-        title: "Person deleted",
-        description: `${deleteTarget.firstName} ${deleteTarget.lastName} has been removed.`,
-      })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete person. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setDeleteTarget(null)
-    }
-  }
-
-  const handleLogout = () => {
-    clearToken()
-    router.push(ROUTES.LOGIN)
-  }
-
+export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-                <Users className="h-5 w-5 text-primary-foreground" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
+                <Activity className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">People</h1>
-                {user && (
-                  <p className="text-sm text-muted-foreground">
-                    Welcome, {user.firstName} {user.lastName}
-                  </p>
-                )}
+                <h1 className="text-3xl font-bold text-foreground">Application Monitoring</h1>
+                <p className="text-muted-foreground">Sentry-like error tracking and monitoring service</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Button asChild variant="outline">
-                <Link href="/monitoring">
-                  <Activity className="mr-2 h-4 w-4" />
-                  Monitoring
+                <Link href="/test">
+                  <Bug className="mr-2 h-4 w-4" />
+                  Test SDK
                 </Link>
               </Button>
               <Button asChild>
-                <Link href={ROUTES.PEOPLE_NEW}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add person
+                <Link href="/monitoring">
+                  <Activity className="mr-2 h-4 w-4" />
+                  Dashboard
                 </Link>
-              </Button>
-              <Button variant="outline" onClick={handleLogout}>
-                <LogOut className="mr-2 h-4 w-4" />
-                Logout
               </Button>
             </div>
           </div>
@@ -101,57 +40,100 @@ export default function PeoplePage() {
       </header>
 
       {/* Main content */}
-      <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search by name, email, department..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-              aria-label="Search people"
-            />
-          </div>
+      <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-foreground mb-4">
+            Monitor Your Applications
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Capture, track, and analyze errors from your JavaScript applications with our
+            comprehensive monitoring service.
+          </p>
         </div>
 
-        {/* Content */}
-        {isLoading ? (
-          <PeopleSkeleton />
-        ) : people.length === 0 ? (
-          <EmptyState
-            title={searchQuery ? "No results found" : "No people yet"}
-            description={
-              searchQuery
-                ? "Try adjusting your search terms or filters."
-                : "Get started by adding your first team member."
-            }
-            icon={<Users className="h-8 w-8 text-muted-foreground" />}
-          />
-        ) : (
-          <>
-            <PeopleTable people={people} onDelete={setDeleteTarget} />
-            <PeopleCards people={people} onDelete={setDeleteTarget} />
-          </>
-        )}
-      </main>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bug className="h-5 w-5 text-red-500" />
+                Error Tracking
+              </CardTitle>
+              <CardDescription>
+                Automatically capture and track JavaScript errors from your applications
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>• Real-time error capture</li>
+                <li>• Stack trace analysis</li>
+                <li>• Error deduplication</li>
+                <li>• Environment tracking</li>
+              </ul>
+            </CardContent>
+          </Card>
 
-      {/* Delete confirmation dialog */}
-      <ConfirmDialog
-        open={!!deleteTarget}
-        onOpenChange={(open) => !open && setDeleteTarget(null)}
-        onConfirm={handleDelete}
-        title="Delete person"
-        description={
-          deleteTarget
-            ? `Are you sure you want to delete ${deleteTarget.firstName} ${deleteTarget.lastName}? This action cannot be undone.`
-            : ""
-        }
-        confirmLabel="Delete"
-        cancelLabel="Cancel"
-      />
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5 text-blue-500" />
+                Data Storage
+              </CardTitle>
+              <CardDescription>
+                Secure and scalable storage for all your monitoring data
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>• PostgreSQL database</li>
+                <li>• Event persistence</li>
+                <li>• Project management</li>
+                <li>• API key authentication</li>
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-yellow-500" />
+                Easy Integration
+              </CardTitle>
+              <CardDescription>
+                Simple JavaScript SDK for quick integration with any web application
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>• Lightweight SDK</li>
+                <li>• REST API</li>
+                <li>• CORS support</li>
+                <li>• Real-time dashboard</li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="mt-12 text-center">
+          <h3 className="text-2xl font-bold text-foreground mb-4">Get Started</h3>
+          <p className="text-muted-foreground mb-6">
+            Test the monitoring service or view the dashboard to see captured errors
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Button asChild size="lg">
+              <Link href="/test">
+                <Bug className="mr-2 h-4 w-4" />
+                Test the SDK
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/monitoring">
+                <Activity className="mr-2 h-4 w-4" />
+                View Dashboard
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </main>
     </div>
   )
 }

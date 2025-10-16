@@ -1,23 +1,22 @@
-# HR Management System - Frontend
+# Application Monitoring Service - Frontend
 
-A modern HR management web application built with Next.js 15, featuring user authentication and people management with full CRUD operations.
+A modern application monitoring web application built with Next.js 15, featuring error tracking and monitoring dashboard.
 
 ## Features
 
-- **Authentication**: JWT-based login with session management
-- **People Management**: Full CRUD operations with search functionality
+- **Error Tracking**: Real-time error monitoring and tracking
+- **Monitoring Dashboard**: View captured errors and system metrics
+- **SDK Testing**: Test the monitoring SDK functionality
 - **Responsive Design**: Works on desktop and mobile devices
 - **Modern UI**: Built with Tailwind CSS and Radix UI components
 - **Type Safety**: Full TypeScript implementation
-- **Form Validation**: Client-side validation with error handling
 
 ## Tech Stack
 
 - **Framework**: Next.js 15 with App Router
 - **UI**: Tailwind CSS with Radix UI components
-- **State Management**: Zustand
-- **Forms**: React Hook Form with Zod validation
-- **HTTP Client**: Fetch API with custom service layer
+- **State Management**: React hooks
+- **HTTP Client**: Fetch API
 - **Package Manager**: pnpm
 
 ## Prerequisites
@@ -51,169 +50,80 @@ pnpm run dev
 
 The application will be available at `http://localhost:3000`
 
-## Default Login Credentials
-
-Use these credentials to test the application:
-
-**Admin User:**
-- Email: `admin@hrapp.com`
-- Password: `admin123`
-
-**HR Manager:**
-- Email: `hr@hrapp.com`
-- Password: `hr123`
-
 ## Application Features
 
-### Authentication
-- Secure login with JWT tokens
-- Automatic session validation
-- Token expiration handling
-- Protected routes with middleware
+### Error Tracking
+- Real-time error monitoring
+- Error deduplication
+- Stack trace analysis
+- Environment tracking
 
-### People Management
-- View list of all people
-- Search by name, email, or department
-- Add new people
-- Edit existing people
-- Delete people with confirmation
-- Responsive table and card views
+### Monitoring Dashboard
+- System health status
+- Application metrics
+- Recent errors display
+- Performance monitoring
+
+### SDK Testing
+- Test different error types
+- Validate SDK functionality
+- Real-time error sending
 
 ### User Experience
 - Loading states and error handling
-- Form validation with helpful error messages
-- Toast notifications for actions
-- Responsive design for all screen sizes
+- Responsive design
+- Modern UI components
 
-## Available Scripts
+## Available Pages
 
-### Development
-- `pnpm run dev` - Start development server with hot reload
-- `pnpm run build` - Build the application for production
-- `pnpm run start` - Start production server
-- `pnpm run lint` - Run ESLint
+- **Home** (`/`) - Main landing page with navigation
+- **Test SDK** (`/test`) - Test the monitoring SDK
+- **Dashboard** (`/monitoring`) - View monitoring data
 
-## Project Structure
+## Development
+
+### Project Structure
 
 ```
 hr-web-next/
-├── app/                    # Next.js App Router pages
-│   ├── login/             # Login page
-│   ├── people/            # People management pages
+├── app/                    # Next.js app router pages
+│   ├── page.tsx           # Home page
+│   ├── test/              # SDK test page
+│   ├── monitoring/        # Monitoring dashboard
 │   └── layout.tsx         # Root layout
 ├── components/            # React components
-│   ├── ui/               # Reusable UI components
-│   ├── person-form.tsx   # Person form component
-│   ├── people-table.tsx  # People table component
-│   └── people-cards.tsx  # People cards component
+│   ├── ui/               # UI components
+│   └── navigation/       # Navigation components
 ├── lib/                  # Utilities and services
-│   ├── services/         # API services
-│   ├── hooks/           # Custom React hooks
-│   ├── types.ts         # TypeScript type definitions
-│   └── validations.ts   # Form validation schemas
-├── hooks/               # Global hooks
-└── middleware.ts        # Next.js middleware for auth
+│   ├── constants.ts      # App constants
+│   ├── types.ts          # TypeScript types
+│   └── services/         # API services
+└── README.md             # This file
 ```
 
-## API Integration
+### Scripts
 
-The frontend communicates with the backend API through:
-
-- **Authentication Service**: Handles login, logout, and token management
-- **People Service**: Manages CRUD operations for people
-- **API Service**: Base HTTP client with token handling
-
-## Authentication Flow
-
-1. **Login**: User enters credentials → API validates → JWT token returned
-2. **Token Storage**: Token stored in memory, API service, and cookie
-3. **Route Protection**: Middleware checks token validity on each request
-4. **Session Validation**: App verifies token with backend on load
-5. **Logout**: Clears all token storage and redirects to login
-
-## Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_API_BASE` | Backend API base URL | `http://localhost:4000` |
-
-## Development Tips
-
-1. **Hot Reload**: The development server supports hot reload for instant updates
-2. **TypeScript**: All components are fully typed for better development experience
-3. **Error Handling**: Check browser console for detailed error information
-4. **Network Tab**: Use browser dev tools to monitor API requests
-5. **Responsive Testing**: Test on different screen sizes using browser dev tools
+- `pnpm run dev` - Start development server
+- `pnpm run build` - Build for production
+- `pnpm run start` - Start production server
+- `pnpm run lint` - Run ESLint
 
 ## Troubleshooting
 
 ### Common Issues
 
-**Application won't start:**
-- Ensure Node.js 18+ is installed
-- Run `pnpm install` to install dependencies
-- Check that port 3000 is available
+**Frontend won't start:**
+- Ensure backend is running on port 4000
+- Check if port 3000 is available
+- Verify environment variables
 
-**Login fails:**
-- Verify backend API is running on port 4000
-- Check browser network tab for API errors
-- Ensure correct credentials are being used
-
-**API requests fail:**
-- Verify `NEXT_PUBLIC_API_BASE` environment variable
-- Check backend API is running and accessible
-- Look for CORS errors in browser console
-
-**Styling issues:**
-- Ensure Tailwind CSS is properly configured
-- Check for missing CSS imports
-- Verify component class names are correct
+**API connection issues:**
+- Verify backend API is running
+- Check CORS configuration
+- Verify API endpoints
 
 ### Getting Help
 
-1. Check browser console for error messages
-2. Verify backend API is running and accessible
-3. Ensure all environment variables are set correctly
-4. Review the backend API documentation
-
-## Production Deployment
-
-### Build for Production
-
-```bash
-pnpm run build
-pnpm run start
-```
-
-### Environment Variables for Production
-
-```env
-NEXT_PUBLIC_API_BASE=https://your-api-domain.com
-```
-
-### Deployment Considerations
-
-- Set up proper environment variables
-- Configure CORS on the backend for your domain
-- Use HTTPS in production
-- Set up proper error monitoring
-- Configure CDN for static assets
-
-## Security Features
-
-- **JWT Authentication**: Secure token-based authentication
-- **Route Protection**: Middleware prevents unauthorized access
-- **Input Validation**: Client-side form validation
-- **XSS Protection**: React's built-in XSS protection
-- **CSRF Protection**: SameSite cookie configuration
-
-## Browser Support
-
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-## License
-
-MIT License
+1. Check the console output for error messages
+2. Verify all services are running on correct ports
+3. Check browser developer tools for network errors

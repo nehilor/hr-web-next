@@ -3,40 +3,15 @@ import type { ApiError } from "../types"
 
 export class ApiService {
   private baseUrl: string
-  private token: string | null = null
 
   constructor() {
     this.baseUrl = API_CONFIG.BASE_URL
-    // Initialize token from cookies if available (client-side only)
-    if (typeof window !== 'undefined') {
-      this.initializeTokenFromCookies()
-    }
-  }
-
-  private initializeTokenFromCookies() {
-    const cookies = document.cookie.split(';')
-    const authCookie = cookies.find(cookie => cookie.trim().startsWith('auth-token='))
-    if (authCookie) {
-      this.token = authCookie.split('=')[1]
-    }
-  }
-
-  setToken(token: string | null) {
-    this.token = token
-  }
-
-  getToken() {
-    return this.token
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
       ...options.headers,
-    }
-
-    if (this.token) {
-      headers["Authorization"] = `Bearer ${this.token}`
     }
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {

@@ -1,14 +1,13 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
-import { Providers } from "@/components/providers"
 import { ErrorBoundary } from "@/components/error-boundary"
+import { Toaster } from "@/components/ui/toaster"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
-  title: "HR Management System",
-  description: "Manage your team efficiently",
+  title: "Application Monitoring Service",
+  description: "Sentry-like error tracking and monitoring service",
   generator: "v0.app",
 }
 
@@ -22,10 +21,10 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <ErrorBoundary>
           <Suspense fallback={<div>Loading...</div>}>
-            <Providers>{children}</Providers>
+            {children}
           </Suspense>
         </ErrorBoundary>
-        <Analytics />
+        <Toaster />
       </body>
     </html>
   )
